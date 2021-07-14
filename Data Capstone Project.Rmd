@@ -1,0 +1,119 @@
+---
+title: "Data Capstone Project: Moneyball (MLB 2000-2001 Data)"
+output: html_notebook
+---
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(plotly)
+```
+
+```{r}
+batting_df <- read.csv("Batting.csv")
+head(batting_df)
+```
+
+```{r}
+str(batting_df)
+```
+
+```{r}
+head(batting_df$AB)
+```
+
+```{r}
+head(batting_df$X2B)
+```
+
+```{r}
+batting_df$BA <- batting_df$H / batting_df$AB
+tail(batting_df$BA)
+```
+
+```{r}
+batting_df$times.on.base <- batting_df$H + batting_df$BB + batting_df$HBP
+batting_df$total.plate.apps <- batting_df$AB + batting_df$BB + batting_df$HBP + batting_df$SF
+batting_df$OBP <- batting_df$times.on.base/ batting_df$total.plate.apps
+tail(batting_df$OBP)
+```
+
+```{r}
+batting_df$X1B <- batting_df$H - batting_df$X2B - batting_df$X3B - batting_df$HR
+tail(batting_df$X1B)
+```
+
+```{r}
+batting_df$SLG <- (batting_df$X1B +(2*batting_df$X2B) +(3*batting_df$X3B) +(4*batting_df$HR))/ batting_df$AB
+tail(batting_df$SLG)
+```
+
+```{r}
+str(batting_df)
+```
+
+```{r}
+sal <- read.csv('Salaries.csv')
+head(sal)
+```
+
+```{r}
+sal_updated_df <- subset(sal,yearID > 1984)
+summary(sal_updated_df)
+#sal[sal['yearID'] > 1984,]
+```
+
+```{r}
+df <- merge(batting_df,sal_updated_df, by= c('playerID', 'yearID'))
+summary(df)
+```
+
+```{r}
+lost_players <- c('giambja01', 'damonjo01', 'saenzol01')
+lp_df <- subset(df, playerID %in% lost_players)
+lp_2k1_stats <- subset(lp_df, yearID == 2001)
+
+```
+
+```{r}
+lp_2k1_df <- select(lp_2k1_stats, playerID, H, X2B, X3B, HR, OBP, SLG, BA, AB)
+summary(lp_2k1_df)
+```
+```{r}
+# lost players 2001 data frame (lp_2k1_df)
+print(paste('Total AB:', sum(lp_2k1_df$AB)))
+print(paste('Mean OBP:', round(mean(lp_2k1_df$OBP),4)))
+```
+
+```{r}
+test_df <- df[df$AB >= 490 | df$OBP >= .3639,]
+test_df <- drop_na(test_df)
+
+# Filter for year 2001
+test_df <- subset(test_df, yearID == 2001)
+
+# All players with 490 or more AB's & OBP >= .3639
+test_df <- test_df[test_df$AB >= 490,]
+
+#Filter for players who's salary does not exceed 5 Million
+test_df <- test_df[test_df$salary <= 5000000,]
+
+test_df <- test_df[test_df$OBP > .3639,]
+test_df
+```
+
+```{r}
+replacement_players <- c('abreubo01', 'aurilri01', 'berkmla01')
+rp_df <- subset(test_df, playerID %in% replacement_players)
+
+print(paste('Total AB:', sum(rp_df$AB)))
+print(paste('Mean OBP:', round(mean(rp_df$OBP),4)))
+print(paste('Total Salary:', sum(rp_df$salary)))
+
+# Player 1: Bobby Abreu
+# Player 2: Rich Aurilia
+# Player 3: Lance Berkman
+
+```
+

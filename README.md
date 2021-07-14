@@ -21,7 +21,7 @@ This is a capstone project for a MOOC from Udemy. (Data Science and Machine Lear
 *The Goal:* To find three replacement players who could bring similar or better production for the same or lower cost.
 
 Associated Files:
-- Data Capstone Project.html - Prompt of the project
+- Moneyball Project.html - Prompt of the project
 - Data Capstone Project.Rmd - The code written to explore datasets (salary and batting)
 - Salary.csv - Dataset containing all MLB player salaries
 - Batting.csv - Dataset containing all MLB player batting statistics
